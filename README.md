@@ -40,7 +40,7 @@ This API allows users to book flights, retrieve available routes, flight times, 
 - **Example**: `DELETE /api/v1/routes?routeId=42d31599-53a9-4040-8ec2-e1e6989d15ab`
 
 
-## 2. Flight information
+### 2. Flight information
 - **Endpoint**: `/api/v1/flights`
 - **Methods**: `GET` 
 - **Description**: Get information about a specific flight.
@@ -68,7 +68,7 @@ This API allows users to book flights, retrieve available routes, flight times, 
   - `flightId`: the ID of specific flight
 - **Example**: `DELETE /api/v1/flights?flightId=9a89da7e-422e-4269-90e8-154a50324ef7`
 
-## 3. Search flights
+### 3. Search flights
 - **Endpoint**: `/api/v1/search`
 - **Method**: `POST`
 - **Content-Type**: `application/json`
@@ -82,7 +82,7 @@ This API allows users to book flights, retrieve available routes, flight times, 
 }
 ```
 
-## 4. Alternative Routes
+### 4. Alternative Routes
 - **Endpoint**: `/api/v1/alternatives`
 - **Method**: `GET`
 - **Description**: Retrieve a list of aternative routes between two locations.
@@ -108,14 +108,14 @@ This API allows users to book flights, retrieve available routes, flight times, 
   - `alternativeRouteId`: the ID of specific alternative route
 - **Example**: `DELETE /api/v1/alternatives?alternativeRouteId=456`
 
-## 5. Layover information
+### 5. Layover information
 - **Endpoint:** `/api/v1/layovers`
 - **Method:** GET
 - **Description:** Retrieve information about layovers for a specific route.
 - **Parameters**:
   - `id`: The unique flight identifier.
 
-## 6. Book a flight
+### 6. Book a flight
 - **Endpoint:** `/api/v1/bookings`
 - **Method:** POST
 - **Content-Type**: `application/json`
@@ -153,3 +153,52 @@ This API allows users to book flights, retrieve available routes, flight times, 
 - **Privileges:**
   - Limited access to public API endpoints (e.g., retrieving general route and flight information).
   - No ability to perform actions that require user authentication such as booking.
+
+## JWT Authentication
+
+### 1. User registration
+- **Endpoint** `/api/v1/register`
+- **Method:** `POST`
+- **Content-Type**: `application/json`
+- **Description:** Register a user
+- **Example:** `POST /api/v1/register`
+```
+{
+    "email": "johnsmith@example.com"
+    "username": "john_smith",
+    "password": "secret"
+}
+```
+
+### 2. User authorization
+- **Endpoint** `/api/v1/login`
+- **Method:** `POST`
+- **Content-Type**: `application/json`
+- **Description:** Authorize a user
+- **Example:** `POST /api/v1/login`
+```
+{
+    "username": "john_smith",
+    "password": "secret"
+}
+```
+
+### 3. Refresh token
+- **Endpoint** `/api/v1/refresh`
+- **Method:** `POST`
+- **Content-Type**: `application/json`
+- **Description:** Refresh token
+- **Example:** `POST /api/v1/login`
+```
+{
+    "username": "john_smith"
+    "refreshToken": [refreshToken] //refresh token we got from user authorization
+}
+```
+
+### 4. Logout
+- **Endpoint** `/api/v1/logout`
+- **Method:** `GET`
+- **Description:** logout the user
+
+**Note:** For all authenticated requests, the Authorization header with the JWT token is required. If not 401 Unauthorized response is returned.
