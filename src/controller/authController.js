@@ -4,13 +4,13 @@ import { createJWT, verify, tokenBlacklist } from "../util/jwt.js";
 
 const register = async (req, res) => {
   try {
-    const { email, username, password } = req.body;
+    const { email, username, password, role } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query =
-      "INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING *";
-    const values = [email, username, hashedPassword];
+      "INSERT INTO users (email, username, password, role) VALUES ($1, $2, $3, $4) RETURNING *";
+    const values = [email, username, hashedPassword, role];
     const result = await pool.query(query, values);
     const newUser = result.rows[0];
     res.json({
@@ -19,6 +19,7 @@ const register = async (req, res) => {
         userId: newUser.user_id,
         email: newUser.email,
         username: newUser.username,
+        role: newUser.role,
       },
     });
   } catch (error) {
@@ -39,16 +40,20 @@ const login = async (req, res) => {
       if (passwordMatch) {
         const accessToken = createJWT(
           {
-            userId: user.user_id,
+            iss: "airportTravelAdvisor",
+            sub: String(user.user_id),
             username: user.username,
-            exp: Math.floor(Date.now() / 1000) + 10, // 10 min expiration
+            role: user.role,
+            exp: Math.floor(Date.now() / 1000) + 600, // 10 min expiration
           },
           process.env.ACCESS_TOKEN_SECRET,
         );
         const refreshToken = createJWT(
           {
-            userId: user.user_id,
+            iss: "airportTravelAdvisor",
+            sub: String(user.user_id),
             username: user.username,
+            role: user.role,
             exp: Math.floor(Date.now() / 1000) + 86400, // 1 day expiration
           },
           process.env.REFRESH_TOKEN_SECRET,
@@ -86,11 +91,14 @@ const refresh = (req, res) => {
     if (err) {
       return res.status(401).json({ message: "Refresh token is invalid" });
     }
+
     const accessToken = createJWT(
       {
-        userId: decoded.user_id,
-        username: decoded.username,
-        exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour expiration
+        iss: "airportTravelAdvisor",
+        sub: String(user.user_id),
+        username: user.username,
+        role: user.role,
+        exp: Math.floor(Date.now() / 1000) + 600, // 10 min expiration
       },
       process.env.ACCESS_TOKEN_SECRET,
     );
