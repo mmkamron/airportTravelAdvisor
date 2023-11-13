@@ -1,21 +1,17 @@
 # Data Modeling
 
-## Content
+## Table of Contents
 
-- [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Tables](#tables)
-  - [Admin](#1-admin)
-  - [Airport](#2-airport)
-  - [Booking](#3-booking)
-  - [Booking_Flights](#4-booking-flights)
-  - [City](#5-city)
-  - [Route](#6-route)
-  - [Ticket](#7-ticket)
-  - [User](#8-user)
+  - [1. Airport](#1-airport)
+  - [2. Ticket](#2-ticket)
+  - [3. User](#3-user)
 - [Relationships](#relationships)
+    - [1. User to Ticket](#1-user-to-ticket)
+    - [2. Ticket to Airport (from_airport)](#2-ticket-to-airport-from_airport)
+    - [3. Ticket to Airport (to_airport)](#3-ticket-to-airport-to_airport)
 
 -----
-
 
 ## Entity Relationship Diagram
 
@@ -23,90 +19,52 @@
 
 ## Tables
 
-### 1. Admin
+### 1. Airport
 
-| Key | Column Name | Data Type | Description                       |
-|-----|-------------|-----------|-----------------------------------|
-| PK  | id          | int       | Primary key for Admin record      |
-|     | user_id     | int       | User ID linked to this admin      |
+| Key | Column Name      | Data Type | Description                  |
+|-----|------------------|-----------|------------------------------|
+| PK  | id               | int       | Primary key for Airport     |
+|     | name             | varchar   | Name of the airport          |
+|     | city             | varchar   | Name of the city             |
 
-### 2. Airport
+### 2. Ticket
 
-| Key | Column Name | Data Type | Description                      |
-|-----|-------------|-----------|----------------------------------|
-| PK  | id          | int       | Primary key for Airport record   |
-|     | name        | varchar   | Name of the airport               |
-|     | city_id     | int       | City ID linked to this airport   |
+| Key | Column Name     | Data Type | Description                                                 |
+|-----|-----------------|-----------|-------------------------------------------------------------|
+| PK  | id              | int       | Primary key for Ticket                                      |
+| FK  | user_id         | int       | Foreign key to User (nullable, ticket can be not purchased) |
+| FK  | from_airport_id | int       | Foreign key to Airport (from)                               |
+| FK  | to_airport_id   | int       | Foreign key to Airport (to)                                 |
+|     | seat_number     | int       | Seat number of the ticket                                   |
+|     | price           | int       | Price of the ticket                                         |
+|     | departure_time  | timestamp | Departure time of the ticket                                |
+|     | arrival_time    | timestamp | Arrival time of the ticket                                  |
 
-### 3. Booking
+### 3. User
 
-| Key | Column Name | Data Type | Description                         |
-|-----|-------------|-----------|-------------------------------------|
-| PK  | id          | int       | Primary key for Booking record      |
-|     | from_city_id | int      | City ID for the departure city      |
-|     | to_city_id   | int      | City ID for the destination city    |
-|     | total_price  | int       | Total price of the booking          |
-|     | user_id      | int       | User ID linked to this booking      |
-|     | date         | int       | Date of the booking                 |
-
-### 4. Booking_Flights
-Association table linking Booking and Ticket.
-
-| Key | Column Name  | Data Type | Description                        |
-|-----|--------------|-----------|------------------------------------|
-| FK  | booking_id   | int       | Foreign key to Booking table       |
-| FK  | ticket_id    | int       | Foreign key to Ticket table        |
-|     | flight_order | int       | Order of the flight in the booking |
-
-### 5. City
-
-| Key | Column Name | Data Type | Description                      |
-|-----|-------------|-----------|----------------------------------|
-| PK  | id          | int       | Primary key for City record      |
-|     | name        | varchar   | Name of the city                 |
-
-### 6. Route
-
-| Key | Column Name    | Data Type | Description                           |
-|-----|----------------|-----------|---------------------------------------|
-| PK  | id             | int       | Primary key for Route record          |
-|     | from_airport_id| int       | Airport ID for the departure airport  |
-|     | to_airport_id  | int       | Airport ID for the destination airport|
-
-### 7. Ticket
-
-| Key | Column Name    | Data Type  | Description                            |
-|-----|----------------|------------|----------------------------------------|
-| PK  | id             | int        | Primary key for Ticket record          |
-|     | route_id       | int        | Route ID linked to this ticket         |
-|     | price          | int        | Price of the ticket                    |
-|     | departure_time | timestamp  | Departure time of the flight           |
-|     | arrival_time   | timestamp  | Arrival time of the flight             |
-|     | seat_number    | int        | Seat number on the flight              |
-
-### 8. User
-
-| Key | Column Name | Data Type | Description                      |
-|-----|-------------|-----------|----------------------------------|
-| PK  | id          | int       | Primary key for User record      |
-|     | email       | varchar   | User's email                     |
-|     | username    | varchar   | User's username                  |
-|     | password    | varchar   | User's hashed password           |
+| Key | Column Name | Data Type | Description                               |
+|-----|-------------|-----------|-------------------------------------------|
+| PK  | id          | int       | Primary key for User                      |
+|     | email       | varchar   | Email of the user                         |
+|     | username    | varchar   | Username of the user                      |
+|     | password    | varchar   | Password of the user                      |
+|     | role        | user_role | Role of the user (enum('admin','client')) |
 
 ## Relationships
 
-### One-to-One Relationships
+All relationships are one to many
 
-- admin -> user
-- airport -> city
-- booking -> user
-- from_airport -> airport
-- to_airport -> airport
-- ticket -> route
+### 1. User to Ticket
 
-### One-to-Many Relationships
+- One user can have many tickets.
+- One ticket can belong to only one user.
 
-- booking_flights -> flight
-- city -> booking (from)
-- city -> booking (to)
-- booking_flights -> flight
+### 2. Ticket to Airport (from_airport)
+
+- One ticket is associated with one departure airport.
+- One departure airport can be associated with many tickets.
+
+### 3. Ticket to Airport (to_airport)
+
+- One ticket is associated with one destination airport.
+- One destination airport can be associated with many tickets.
