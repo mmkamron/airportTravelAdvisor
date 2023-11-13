@@ -1,5 +1,9 @@
 # Data Modeling
 
+## Entity Relationship Diagram
+
+![data-modeling](erd.png)
+
 ## Table of Contents
 
 - [Tables](#tables)
@@ -12,10 +16,6 @@
     - [3. Ticket to Airport (to_airport)](#3-ticket-to-airport-to_airport)
 
 -----
-
-## Entity Relationship Diagram
-
-![data-modeling](erd.png)
 
 ## Tables
 
