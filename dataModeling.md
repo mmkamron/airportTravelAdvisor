@@ -4,16 +4,16 @@
 
 ![data-modeling](erd.png)
 
-## Table of Contents
+# Data Modeling
+
+## Contents
 
 - [Tables](#tables)
-  - [1. Airport](#1-airport)
-  - [2. Ticket](#2-ticket)
-  - [3. User](#3-user)
+  - [Airport](#1-airport)
+  - [Flight](#2-flight)
+  - [Ticket](#3-ticket)
+  - [User](#4-user)
 - [Relationships](#relationships)
-    - [1. User to Ticket](#1-user-to-ticket)
-    - [2. Ticket to Airport (from_airport)](#2-ticket-to-airport-from_airport)
-    - [3. Ticket to Airport (to_airport)](#3-ticket-to-airport-to_airport)
 
 -----
 
@@ -21,50 +21,55 @@
 
 ### 1. Airport
 
-| Key | Column Name      | Data Type | Description                  |
-|-----|------------------|-----------|------------------------------|
-| PK  | id               | int       | Primary key for Airport     |
-|     | name             | varchar   | Name of the airport          |
-|     | city             | varchar   | Name of the city             |
+| Key | Column Name    | Data Type | Description                |
+|-----|----------------|-----------|----------------------------|
+| PK  | id             | int       | Primary key for Airport    |
+|     | name           | varchar   | Name of the airport        |
+|     | city           | varchar   | Name of the city           |
 
-### 2. Ticket
+### 2. Flight
 
-| Key | Column Name     | Data Type | Description                                                 |
-|-----|-----------------|-----------|-------------------------------------------------------------|
-| PK  | id              | int       | Primary key for Ticket                                      |
-| FK  | user_id         | int       | Foreign key to User (nullable, ticket can be not purchased) |
-| FK  | from_airport_id | int       | Foreign key to Airport (from)                               |
-| FK  | to_airport_id   | int       | Foreign key to Airport (to)                                 |
-|     | seat_number     | int       | Seat number of the ticket                                   |
-|     | price           | int       | Price of the ticket                                         |
-|     | departure_time  | timestamp | Departure time of the ticket                                |
-|     | arrival_time    | timestamp | Arrival time of the ticket                                  |
+| Key | Column Name      | Data Type | Description                           |
+|-----|------------------|-----------|---------------------------------------|
+| PK  | id               | int       | Primary key for Flight                |
+|     | from_airport_id  | int       | Foreign key referencing Airport (from)|
+|     | to_airport_id    | int       | Foreign key referencing Airport (to)  |
+|     | departure_time   | timestamp | Time of flight departure              |
+|     | arrival_time     | timestamp | Time of flight arrival                |
 
-### 3. User
+### 3. Ticket
 
-| Key | Column Name | Data Type | Description                               |
-|-----|-------------|-----------|-------------------------------------------|
-| PK  | id          | int       | Primary key for User                      |
-|     | email       | varchar   | Email of the user                         |
-|     | username    | varchar   | Username of the user                      |
-|     | password    | varchar   | Password of the user                      |
-|     | role        | user_role | Role of the user (enum('admin','client')) |
+| Key | Column Name  | Data Type | Description                        |
+|-----|--------------|-----------|------------------------------------|
+| PK  | id           | int       | Primary key for Ticket              |
+|     | flight_id    | int       | Foreign key referencing Flight     |
+|     | user_id      | int       | Foreign key referencing User       |
+|     | seat_number  | int       | Seat number on the flight           |
+|     | price        | int       | Price of the ticket                 |
+
+### 4. User
+
+| Key | Column Name | Data Type | Description                     |
+|-----|-------------|-----------|---------------------------------|
+| PK  | id          | int       | Primary key for User             |
+|     | email       | varchar   | User's email                     |
+|     | username    | varchar   | User's username                  |
+|     | password    | varchar   | User's hashed password           |
+|     | role        | user_role | User's role (admin or client)    |
 
 ## Relationships
 
-All relationships are one to many
+- **User to Ticket - One-to-Many:**
+  - One user can have many tickets, but one ticket cannot have many users.
 
-### 1. User to Ticket
+- **Flight to Airport (From) - Many-to-One:**
+  - Many flights can depart from the same airport, but each flight can depart from only one airport.
 
-- One user can have many tickets.
-- One ticket can belong to only one user.
+- **Flight to Airport (To) - Many-to-One:**
+  - Many flights can arrive at the same airport, but each flight can arrive at only one airport.
 
-### 2. Ticket to Airport (from_airport)
+- **Ticket to Flight - Many-to-One:**
+  - Many tickets can be associated with one flight, but each ticket is associated with only one flight.
 
-- One ticket is associated with one departure airport.
-- One departure airport can be associated with many tickets.
-
-### 3. Ticket to Airport (to_airport)
-
-- One ticket is associated with one destination airport.
-- One destination airport can be associated with many tickets.
+- **Ticket to User - Many-to-One:**
+  - Many tickets can be associated with one user, but each ticket is associated with only one user.
