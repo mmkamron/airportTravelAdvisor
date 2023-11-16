@@ -8,6 +8,8 @@ This API allows users to book flights, retrieve available routes, flight times, 
 - Node.js v18.18.0 LTS
 - Docker
 
+## [Data modeling](dataModeling.md)
+
 ## API routes
 
 ### 1. Available routes
